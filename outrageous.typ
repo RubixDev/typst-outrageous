@@ -1,3 +1,12 @@
+#let align-helper(state-key, what-to-measure, display) = style(styles => {
+  let max-width = state(state-key, 0pt)
+  let this-width = measure(what-to-measure, styles).width
+  max-width.update(max => calc.max(this-width, max))
+  locate(loc => {
+    display(max-width.final(loc), this-width)
+  })
+})
+
 #let presets = (
   // outrageous preset for a Table of Contents
   outrageous-toc: (
@@ -20,11 +29,16 @@
     fill: (repeat[~~.],),
     fill-right-pad: .4cm,
     fill-align: true,
-    body-transform: (lvl, body) => {
-      // exclude the supplement, and group by chapter (if per-chapter numbering is used)
+    body-transform: (lvl, body, state-key: "outline-figure-numbering-max-width") => {
       let (supplement, _, number, separator, ..text) = body.children
-      let v = if number.text.ends-with("1") and not number.text.starts-with("1") { v(10pt) }
-      box[#v#number. #text.join()]
+      let v = if number.text.ends-with(regex("[^\d]1[^\d]*")) and not number.text.starts-with("1") {
+        v(10pt)
+      }
+      align-helper(
+        state-key,
+        [#number.],
+        (max-width, this-width) => box[#v#number.#h(max-width - this-width) #text.join()],
+      )
     },
     page-transform: none,
   ),
@@ -72,37 +86,33 @@
     set text(style: font-style) if font-style not in (auto, none)
     if vspace != none { v(vspace, weak: true) }
 
-    style(styles => {
-      let this-width = measure(entry.page, styles).width
-      if fill != none {
-        max-width.update(max => calc.max(this-width, max))
-      }
+    let fields = entry.fields()
+    if body-transform != none {
+      let new-body = body-transform(entry.level, entry.body)
+      fields.body = if new-body == none { entry.body } else { new-body }
+    }
+    if page-transform != none {
+      let new-page = page-transform(entry.level, entry.page)
+      fields.page = if new-page == none { entry.page } else { new-page }
+    }
 
-      let fields = entry.fields()
-      if body-transform != none {
-        let new-body = body-transform(entry.level, entry.body)
-        fields.body = if new-body == none { entry.body } else { new-body }
-      }
-      if page-transform != none {
-        let new-page = page-transform(entry.level, entry.page)
-        fields.page = if new-page == none { entry.page } else { new-page }
-      }
-
-      if fill in (none, auto) or not fill-align {
-        if fill != auto {
-          fields.fill = if fill == none { none } else {
-            box(width: 100% - fill-right-pad, fill)
-          }
+    if fill in (none, auto) or not fill-align {
+      if fill != auto {
+        fields.fill = if fill == none { none } else {
+          box(width: 100% - fill-right-pad, fill)
         }
-        [#outline.entry(..fields.values()) #label]
-      } else {
-        locate(loc => {
+      }
+      [#outline.entry(..fields.values()) #label]
+    } else {
+      align-helper(
+        state-key,
+        entry.page,
+        (max-width, this-width) => {
           let fields = fields
-          let max-width = max-width.final(loc)
           fields.fill = box(width: 100% - (max-width - this-width) - fill-right-pad, fill)
           [#outline.entry(..fields.values()) #label]
-        })
-      }
-    })
+        }
+      )
+    }
   }
 }

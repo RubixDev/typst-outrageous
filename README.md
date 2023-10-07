@@ -122,6 +122,26 @@ your show rule with
 )
 ```
 
+### `align-helper`
+
+Utility function to help with aligning multiple items.
+
+```typ
+#let align-helper(state-key, what-to-measure, display) = { .. }
+```
+
+**Arguments:**
+
+- `state-key`: [`str`] &mdash; The key to use for the [`state`] that keeps track
+  of the maximum encountered width.
+- `what-to-measure`: [`content`] &mdash; The content to measure at this call.
+- `display`: [`function`] &mdash; A callback which gets passed the maximum
+  encountered width and the width of the current item (what was given to
+  `what-to-measure`), both as [`length`], and should return [`content`] which
+  can make use of these widths for alignment.
+
+**Returns:** [`content`]
+
 [`str`]: https://typst.app/docs/reference/foundations/str/
 [`int`]: https://typst.app/docs/reference/foundations/int/
 [`bool`]: https://typst.app/docs/reference/foundations/bool/
@@ -131,3 +151,5 @@ your show rule with
 [`array`]: https://typst.app/docs/reference/foundations/array/
 [`relative`]: https://typst.app/docs/reference/layout/relative/
 [`fraction`]: https://typst.app/docs/reference/layout/fraction/
+[`state`]: https://typst.app/docs/reference/meta/state/
+[`length`]: https://typst.app/docs/reference/layout/length/

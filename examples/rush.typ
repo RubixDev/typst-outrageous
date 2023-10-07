@@ -98,6 +98,13 @@
 #show outline.entry: outrageous.show-entry.with(..outrageous.presets.outrageous-figures)
 #outline(title: [List of Figures], target: figure.where(kind: "chapfigure-image"))
 #{
+  show outline.entry: outrageous.show-entry.with(
+    ..outrageous.presets.outrageous-figures,
+    body-transform: outrageous.presets.outrageous-figures.body-transform.with(
+      // use a different state key for each "list of x" to separately calculate alignment for each
+      state-key: "outline-table-numbering-max-width",
+    )
+  )
   // override the show rule to not insert a page break
   show heading.where(level: 1): it => {
     v(1.5cm)
@@ -106,7 +113,16 @@
   }
   outline(title: [List of Tables], target: figure.where(kind: "chapfigure-table"))
 }
+#show outline.entry: outrageous.show-entry.with(
+  ..outrageous.presets.outrageous-figures,
+  body-transform: outrageous.presets.outrageous-figures.body-transform.with(
+    state-key: "outline-listing-numbering-max-width",
+  )
+)
 #outline(title: [List of Listings], target: figure.where(kind: "chapfigure-raw"))
+
+// don't allow newlines inside "RISC-V"
+#show "RISC-V": box
 
 #counter(page).update(1)
 = Introduction
@@ -129,20 +145,28 @@ See @my-chapter, @my-section, @my-subsection, @fig:my-figure, @tbl:my-table, and
 = Analyzing the Source <my-chapter>
 == Lexical and Syntactical Analysis <my-section>
 === Formal Syntactical Definition by a Grammer <my-subsection>
+#figure([```rust fn main() {}```], caption: [Grammar for basic arithmetic in EBNF notation.])
 === Grouping Characters Into Tokens
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [The rush '`Lexer`' struct definition.])
 #figure(table(), caption: [Advancing window of a lexer.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Simplified '`Token`' struct definition.])
 === Constructing a Tree
 #figure([a], caption: [Abstract syntax tree for '`1+2**3`'.]) <my-figure>
 #pagebreak()
 #figure(table(), caption: [Mapping from EBNF grammar to Rust type definitions.])
 ==== Operator Precedence
+#figure([```rust fn main() {}```], caption: [Example language a traditional LL(1) parser cannot parse.])
 #pagebreak()
 ==== Pratt Parsing
 #figure([a], caption: [Abstract syntax tree for '`1+2**3`' using Pratt parsing.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Pratt-parser: Implementation for token precedences.])
+#figure([```rust fn main() {}```], caption: [Pratt-parser: Implementation for expressions.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Pratt-parser: Implementation for grouped expressions.])
+#figure([```rust fn main() {}```], caption: [Pratt-parser: Implementation for infix-expressions.])
 #figure([a], caption: [Token precedences for the input '`(1+2*3)/4**5`'.])
 #pagebreak()
 ==== Parser Generators
@@ -150,44 +174,68 @@ See @my-chapter, @my-section, @my-subsection, @fig:my-figure, @tbl:my-table, and
 === Defining the Semantics of a Programming Language
 === The Semantic Analyzer
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [A rush program which adds two integers.])
 ==== Implementation
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Fields of the '`Analyzer`' struct.])
+#figure([```rust fn main() {}```], caption: [Output when compiling an invalid rush program.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Analyzer: Validation of the '`main`' function's signature.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Analyzer: The '`let_stmt`' method.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Analyzer: Analysis of expressions during semantic analysis.])
+#figure([```rust fn main() {}```], caption: [Analyzer: Obtaining the type of expressions.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Analyzer: Validation of argument type compatibility.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Analyzer: Determining whether an expression is constant.])
 ==== Early Optimizations
+#figure([```rust fn main() {}```], caption: [Redundant '`while`' loop inside a rush program.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Analyzer: Loop optimization.])
 #figure([a], caption: [How semantic analysis affects the abstract syntax tree.])
 #pagebreak()
 = Interpreting the Program
 == Tree-Walking Interpreters
+#figure([```rust fn main() {}```], caption: [Tree-walking interpreter: Type definitions.])
 #pagebreak()
 === Implementation
+#figure([```rust fn main() {}```], caption: [Tree-walking interpreter: '`Value`' and '`InterruptKind`' definitions.])
 === How the Interpreter Executes a Program
 #figure([a], caption: [Call stack at the point of processing the '`return`' statement.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Tree-walking interpreter: Beginning of execution.])
+#figure([```rust fn main() {}```], caption: [Tree-walking interpreter: Calling of functions.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Example rush program.])
 === Supporting Pointers
 #pagebreak()
 == Using a Virtual Machine
 === Defining a Virtual Machine
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Struct definition of the VM.])
 === Register-Based and Stack-Based Machines
 === The rush Virtual Machine
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Minimal pointer example in rush.])
 #figure([a], caption: [Linear memory of the rush VM.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [VM instructions for the minimal pointer example.])
 === How the Virtual Machine Executes a rush Program
+#figure([```rust fn main() {}```], caption: [A recursive rush program.]) <recursive-rush-program>
+#figure([```rust fn main() {}```], caption: [Struct definition of a '`CallFrame`'.])
 #pagebreak()
 #figure([a], caption: [Example call stack of the rush VM.])
+#figure([```rust fn main() {}```], caption: [VM instructions matching the AST in @fig:ast-and-vm-instructions.])
 #pagebreak()
 === Fetch-Decode-Execute Cycle of the VM
+#figure([```rust fn main() {}```], caption: [The '`run`' method of the rush VM.])
 #pagebreak()
+#figure([```rust fn main() {}```], caption: [Parts of the '`run_instruction`' method of the rush VM.])
 #pagebreak()
 === Comparing the VM to the Tree-Walking Interpreter
-#figure([a], caption: [AST and VM instructions of the recursive rush program in Listing~3.9.])
+#figure([a], caption: [AST and VM instructions of the recursive rush program in @lst:recursive-rush-program.]) <ast-and-vm-instructions>
 #pagebreak()
 #pagebreak()
 = Compiling to High-Level Targets
