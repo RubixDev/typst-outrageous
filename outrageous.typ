@@ -9,6 +9,7 @@
     fill-right-pad: .4cm,
     fill-align: true,
     body-transform: none,
+    page-transform: none,
   ),
   // outrageous preset for List of Figures/Tables/Listings
   outrageous-figures: (
@@ -20,11 +21,12 @@
     fill-right-pad: .4cm,
     fill-align: true,
     body-transform: (lvl, body) => {
-      // exclude the supplement and group by chapter (if per-chapter numbering is used)
+      // exclude the supplement, and group by chapter (if per-chapter numbering is used)
       let (supplement, _, number, separator, ..text) = body.children
       let v = if number.text.ends-with("1") and not number.text.starts-with("1") { v(10pt) }
       box[#v#number. #text.join()]
     },
+    page-transform: none,
   ),
   // preset without any style changes
   typst: (
@@ -36,6 +38,7 @@
     fill-right-pad: none,
     fill-align: false,
     body-transform: none,
+    page-transform: none,
   ),
 )
 
@@ -49,6 +52,7 @@
   fill-right-pad: presets.outrageous-toc.fill-right-pad,
   fill-align: presets.outrageous-toc.fill-align,
   body-transform: presets.outrageous-toc.body-transform,
+  page-transform: presets.outrageous-toc.page-transform,
   label: <outrageous-modified-entry>,
   state-key: "outline-page-number-max-width",
 ) = {
@@ -78,6 +82,10 @@
       if body-transform != none {
         let new-body = body-transform(entry.level, entry.body)
         fields.body = if new-body == none { entry.body } else { new-body }
+      }
+      if page-transform != none {
+        let new-page = page-transform(entry.level, entry.page)
+        fields.page = if new-page == none { entry.page } else { new-page }
       }
 
       if fill in (none, auto) or not fill-align {

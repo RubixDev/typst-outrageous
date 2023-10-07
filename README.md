@@ -83,7 +83,12 @@ array's last item will be used for all deeper/following levels as well.
   the effect of all fills ending on the same vertical line.
 - `body-transform`: [`function`] or `none` &mdash; Callback for custom edits to
   the entry's body. It gets passed the entry's level ([`int`]) and body
-  ([`content`]) and should return [`content`].
+  ([`content`]) and should return [`content`] or `none`. If `none` is returned,
+  no modifications are made.
+- `page-transform`: [`function`] or `none` &mdash; Callback for custom edits to
+  the entry's page number. It gets passed the entry's level ([`int`]) and page
+  number ([`content`]) and should return [`content`] or `none`. If `none` is
+  returned, no modifications are made.
 - `label`: [`label`] &mdash; The label to internally use for tracking recursion.
   This should not need to be modified.
 - `state-key`: [`str`] &mdash; The key to use for the internal state which
