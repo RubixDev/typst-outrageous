@@ -37,7 +37,7 @@
 }
 
 // references to level 1 headings should say 'Chapter'
-#set heading(supplement: it => if it.level == 1 { [Chapter] } else { [Section] })
+#set heading(supplement: it => if it.depth == 1 { [Chapter] } else { [Section] })
 
 // outlines are indented and only show the first four levels
 #set outline(indent: auto, depth: 4)

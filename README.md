@@ -122,6 +122,22 @@ your show rule with
 )
 ```
 
+### `repeat`
+
+Utility function to repeat content to fill space with a fixed size gap.
+
+```typ
+#let repeat(gap: none, justify: false, body) = { .. }
+```
+
+**Arguments:**
+
+- `gap`: [`length`] or `none` &mdash; The gap between repeated items.
+- `justify`: [`bool`] &mdash; Whether to increase the gap to justify the items.
+- `body`: [`content`] &mdash; The content to repeat.
+
+**Returns:** [`content`]
+
 ### `align-helper`
 
 Utility function to help with aligning multiple items.

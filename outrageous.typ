@@ -7,6 +7,44 @@
   })
 })
 
+/// Repeat the given content to fill the full space.
+///
+/// Custom function instead of the built-in to support fixed-size gaps.
+///
+/// Parameters:
+/// - gap: The gap between repeated items. (Default: none)
+/// - justify: Whether to increase the gap to justify the items. (Default: false)
+///
+/// Returns: The repeated content.
+///
+/// Based on https://github.com/EpicEricEE/typst-plugins/blob/b13b0e1bc30beba65ff19d029e2dad61239a2819/outex/src/outex.typ#L1-L27
+#let repeat(
+  gap: none,
+  justify: false,
+  body
+) = layout(size => style(styles => {
+  // function to measure length in `pt` unit
+  let pt-length(len) = measure(h(len), styles).width
+
+  // width of the body to repeat
+  let width = measure(body, styles).width
+  // how often the body should be repeated
+  let repeat-count = calc.floor(pt-length(size.width + gap) / pt-length(width + gap))
+
+  // justify the gap
+  let gap = if not justify { gap } else {
+    (size.width - repeat-count * width) / (repeat-count - 1)
+  }
+
+  let items = ((box(body),) * repeat-count)
+  if type(gap) == length and gap != 0pt {
+    // add gap between items
+    items = items.intersperse(h(gap))
+  }
+
+  items.join()
+}))
+
 #let presets = (
   // outrageous preset for a Table of Contents
   outrageous-toc: (
@@ -14,7 +52,7 @@
     font-style: (auto,),
     vspace: (12pt, none),
     font: ("Noto Sans", auto),
-    fill: (none, repeat[~~.]),
+    fill: (none, align(right, repeat(gap: 6pt)[.])),
     fill-right-pad: .4cm,
     fill-align: true,
     body-transform: none,
@@ -26,7 +64,7 @@
     font-style: (auto,),
     vspace: (none,),
     font: (auto,),
-    fill: (repeat[~~.],),
+    fill: (align(right, repeat(gap: 6pt)[.]),),
     fill-right-pad: .4cm,
     fill-align: true,
     body-transform: (lvl, body, state-key: "outline-figure-numbering-max-width") => {
