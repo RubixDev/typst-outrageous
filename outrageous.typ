@@ -1,11 +1,9 @@
-#let align-helper(state-key, what-to-measure, display) = style(styles => {
+#let align-helper(state-key, what-to-measure, display) = context {
   let max-width = state(state-key, 0pt)
-  let this-width = measure(what-to-measure, styles).width
+  let this-width = measure(what-to-measure).width
   max-width.update(max => calc.max(this-width, max))
-  locate(loc => {
-    display(max-width.final(loc), this-width)
-  })
-})
+  display(max-width.final(), this-width)
+}
 
 /// Repeat the given content to fill the full space.
 ///
@@ -22,12 +20,12 @@
   gap: none,
   justify: false,
   body
-) = layout(size => style(styles => {
+) = layout(size => context {
   // function to measure length in `pt` unit
-  let pt-length(len) = measure(h(len), styles).width
+  let pt-length(len) = measure(h(len)).width
 
   // width of the body to repeat
-  let width = measure(body, styles).width
+  let width = measure(body).width
   // how often the body should be repeated
   let repeat-count = calc.floor(pt-length(size.width + gap) / pt-length(width + gap))
 
@@ -43,7 +41,7 @@
   }
 
   items.join()
-}))
+})
 
 #let presets = (
   // outrageous preset for a Table of Contents
