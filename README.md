@@ -63,7 +63,7 @@ value for all level-one entries, the second item for level-two, and so on. The
 array's last item will be used for all deeper/following levels as well.
 
 - `entry`: [`content`] &mdash; The
-  [`outline.entry`](https://typst.app/docs/reference/meta/outline/#definitions-entry)
+  [`outline.entry`](https://typst.app/docs/reference/model/outline/#definitions-entry)
   element from the show rule.
 - `font-weight`: [`array`] of ([`str`] or [`int`] or `auto` or `none`) &mdash;
   The entry's font weight. Setting to `auto` or `none` keeps the context's
@@ -162,10 +162,10 @@ Utility function to help with aligning multiple items.
 [`int`]: https://typst.app/docs/reference/foundations/int/
 [`bool`]: https://typst.app/docs/reference/foundations/bool/
 [`content`]: https://typst.app/docs/reference/foundations/content/
-[`label`]: https://typst.app/docs/reference/meta/label/
+[`label`]: https://typst.app/docs/reference/foundations/label/
 [`function`]: https://typst.app/docs/reference/foundations/function/
 [`array`]: https://typst.app/docs/reference/foundations/array/
 [`relative`]: https://typst.app/docs/reference/layout/relative/
 [`fraction`]: https://typst.app/docs/reference/layout/fraction/
-[`state`]: https://typst.app/docs/reference/meta/state/
+[`state`]: https://typst.app/docs/reference/introspection/state/
 [`length`]: https://typst.app/docs/reference/layout/length/
