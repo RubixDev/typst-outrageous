@@ -1,7 +1,7 @@
 [package]
 name = "outrageous"
-version = "0.3.0"
-compiler = "0.11.0"
+version = "0.4.0"
+compiler = "0.13.0"
 authors = ["RubixDev"]
 entrypoint = "outrageous.typ"
 exclude = ["./examples", "./example-*.png"]

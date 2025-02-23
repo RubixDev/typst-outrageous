@@ -2,6 +2,7 @@
 //! See https://paper.rush-lang.de
 
 #import "../outrageous.typ"
+#import "@preview/i-figured:0.2.4"
 
 #set text(font: "New Computer Modern")
 #set page(numbering: "1")
@@ -44,66 +45,25 @@
 
 #{
   // only for ToC: default outrageous-toc styling, but we have to add the trailing dot
-  // to the numbering, and therefore also have to add some more indent
-  show outline.entry: outrageous.show-entry.with(body-transform: (lvl, body) => {
-    // all this just to add a dot after the numbering :/
-    if "children" in body.fields() {
-      let (number, space, ..text) = body.children
-      style(styles => {
-        h(measure([.], styles).width * (lvl - 1))
-        if not number.at("text", default: "").starts-with(regex("\d")) {
-          // if `number` isn't actually a number (i.e. when there is no number),
-          // then `space` is part of the text
-          [#((space,) + text).join()]
-        } else {
-          [#number. #text.join()]
-        }
-      })
+  // to the numbering
+  show outline.entry: outrageous.show-entry.with(prefix-transform: (lvl, prefix) => {
+    if prefix != none and prefix.has("text") {
+      [#prefix.]
     }
   })
   outline()
 }
 
 // figure numbering per chapter
-#show heading.where(level: 1): it => {
-  counter(figure.where(kind: "chapfigure-" + repr(image))).update(0)
-  counter(figure.where(kind: "chapfigure-" + repr(table))).update(0)
-  counter(figure.where(kind: "chapfigure-" + repr(raw))).update(0)
-  it
-}
-#show figure: it => {
-  if type(it.kind) == str and it.kind.starts-with("chapfigure-") {
-    it
-  } else {
-    let chapter = counter(heading.where(level: 1)).at(it.location()).first()
-    let dic = it.fields()
-    let _ = if "body" in dic { dic.remove("body") }
-    let _ = if "label" in dic { dic.remove("label") }
-    let _ = if "counter" in dic { dic.remove("counter") }
-
-    let fig = figure(
-      it.body,
-      ..dic,
-      numbering: n => numbering("1.1", chapter, n),
-      kind: "chapfigure-" + if type(it.kind) == str { it.kind } else { repr(it.kind) },
-    )
-    if it.has("label") {
-      let new-label = if it.kind == table { "tbl" } else if it.kind == raw { "lst" } else { "fig" }
-      new-label += ":" + str(it.label)
-      [#fig #label(new-label)]
-    } else { fig }
-  }
-}
+#show heading: i-figured.reset-counters
+#show figure: i-figured.show-figure
 
 #show outline.entry: outrageous.show-entry.with(..outrageous.presets.outrageous-figures)
-#outline(title: [List of Figures], target: figure.where(kind: "chapfigure-image"))
+#i-figured.outline()
 #{
   show outline.entry: outrageous.show-entry.with(
     ..outrageous.presets.outrageous-figures,
-    body-transform: outrageous.presets.outrageous-figures.body-transform.with(
-      // use a different state key for each "list of x" to separately calculate alignment for each
-      state-key: "outline-table-numbering-max-width",
-    )
+    prefix-transform: outrageous.presets.outrageous-figures.prefix-transform
   )
   // override the show rule to not insert a page break
   show heading.where(level: 1): it => {
@@ -111,15 +71,13 @@
     text(size: 25pt, font: "Noto Sans", it.body)
     v(1cm)
   }
-  outline(title: [List of Tables], target: figure.where(kind: "chapfigure-table"))
+  i-figured.outline(title: [List of Tables], target-kind: table)
 }
 #show outline.entry: outrageous.show-entry.with(
   ..outrageous.presets.outrageous-figures,
-  body-transform: outrageous.presets.outrageous-figures.body-transform.with(
-    state-key: "outline-listing-numbering-max-width",
-  )
+  prefix-transform: outrageous.presets.outrageous-figures.prefix-transform
 )
-#outline(title: [List of Listings], target: figure.where(kind: "chapfigure-raw"))
+#i-figured.outline(title: [List of Listings], target-kind: raw)
 
 // don't allow newlines inside "RISC-V"
 #show "RISC-V": box

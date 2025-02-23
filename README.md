@@ -12,7 +12,7 @@ more examples see the [`examples` directory](./examples).
 ![Example: default style](./example-default.png)
 
 ```typ
-#import "@preview/outrageous:0.1.0"
+#import "@preview/outrageous:0.4.0"
 #show outline.entry: outrageous.show-entry
 ```
 
@@ -21,7 +21,7 @@ more examples see the [`examples` directory](./examples).
 ![Example: custom settings](./example-custom.png)
 
 ```typ
-#import "@preview/outrageous:0.1.0"
+#import "@preview/outrageous:0.4.0"
 #show outline.entry: outrageous.show-entry.with(
   // the typst preset retains the normal Typst appearance
   ..outrageous.presets.typst,
@@ -50,8 +50,9 @@ rule like `#show outline.entry: outrageous.show-entry`.
   fill: presets.outrageous-toc.fill,
   fill-right-pad: presets.outrageous-toc.fill-right-pad,
   fill-align: presets.outrageous-toc.fill-align,
+  prefix-transform: presets.outrageous-toc.prefix-transform,
   body-transform: presets.outrageous-toc.body-transform,
-  label: <outrageous-modified-entry>,
+  page-transform: presets.outrageous-toc.page-transform,
   state-key: "outline-page-number-max-width",
 ) = { .. }
 ```
@@ -81,16 +82,18 @@ array's last item will be used for all deeper/following levels as well.
 - `fill-align`: [`bool`] &mdash; Whether `fill-right-pad` should be relative to
   the current page number or the widest page number. Setting this to `true` has
   the effect of all fills ending on the same vertical line.
-- `body-transform`: [`function`] or `none` &mdash; Callback for custom edits to
-  the entry's body. It gets passed the entry's level ([`int`]) and body
+- `prefix-transform`: [`function`] or `none` &mdash; Callback for custom edits
+  to the entry's prefix. It gets passed the entry's level ([`int`]) and prefix
   ([`content`]) and should return [`content`] or `none`. If `none` is returned,
   no modifications are made.
+- `body-transform`: [`function`] or `none` &mdash; Callback for custom edits to
+  the entry's body. It gets passed the entry's level ([`int`]), prefix
+  ([`content`]) and body ([`content`]) and should return [`content`] or `none`.
+  If `none` is returned, no modifications are made.
 - `page-transform`: [`function`] or `none` &mdash; Callback for custom edits to
   the entry's page number. It gets passed the entry's level ([`int`]) and page
   number ([`content`]) and should return [`content`] or `none`. If `none` is
   returned, no modifications are made.
-- `label`: [`label`] &mdash; The label to internally use for tracking recursion.
-  This should not need to be modified.
 - `state-key`: [`str`] &mdash; The key to use for the internal state which
   tracks the maximum page number width. The state is global for the entire
   document and thus applies to all outlines. If you wish to re-calculate the max
@@ -162,7 +165,6 @@ Utility function to help with aligning multiple items.
 [`int`]: https://typst.app/docs/reference/foundations/int/
 [`bool`]: https://typst.app/docs/reference/foundations/bool/
 [`content`]: https://typst.app/docs/reference/foundations/content/
-[`label`]: https://typst.app/docs/reference/foundations/label/
 [`function`]: https://typst.app/docs/reference/foundations/function/
 [`array`]: https://typst.app/docs/reference/foundations/array/
 [`relative`]: https://typst.app/docs/reference/layout/relative/
