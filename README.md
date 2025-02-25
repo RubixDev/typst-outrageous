@@ -48,6 +48,7 @@ rule like `#show outline.entry: outrageous.show-entry`.
   vspace: presets.outrageous-toc.vspace,
   font: presets.outrageous-toc.font,
   fill: presets.outrageous-toc.fill,
+  gap: presets.outrageous-toc.gap,
   fill-right-pad: presets.outrageous-toc.fill-right-pad,
   fill-align: presets.outrageous-toc.fill-align,
   prefix-transform: presets.outrageous-toc.prefix-transform,
@@ -71,12 +72,16 @@ array's last item will be used for all deeper/following levels as well.
   current style.
 - `font-style`: [`array`] of ([`str`] or `auto` or `none`) &mdash; The entry's
   font style. Setting to `auto` or `none` keeps the context's current style.
-- `vspace`: [`array`] of ([`relative`] or [`fraction`] or `none`) &mdash;
-  Vertical spacing to add above the entry. Setting to `none` adds no space.
+- `vspace`: [`array`] of ([`relative`] or [`fraction`] or `auto` or `none`)
+  &mdash; The vertical space above the entry. Setting to `auto` or `none` keeps
+  the context's current setting.
 - `font`: [`array`] of ([`str`] or [`array`] or `auto` or `none`) &mdash; The
   entry's font. Setting to `auto` or `none` keeps the context's current font.
 - `fill`: [`array`] of ([`content`] or `auto` or `none`) &mdash; The entry's
   fill. Setting to `auto` keeps the context's current setting.
+- `gap`: [`array`] of ([`length`] or `auto` or `none`) &mdash; The gap between
+  the entry's prefix and body. Setting to `auto` keeps the context's current
+  setting. Setting to `none` is the same as `0pt`.
 - `fill-right-pad`: [`relative`] or `none` &mdash; Horizontal space to put
   between the fill and page number.
 - `fill-align`: [`bool`] &mdash; Whether `fill-right-pad` should be relative to

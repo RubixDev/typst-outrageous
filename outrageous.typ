@@ -51,6 +51,7 @@
     vspace: (12pt, none),
     font: ("Noto Sans", auto),
     fill: (none, align(right, repeat(gap: 6pt)[.])),
+    gap: (auto,),
     fill-right-pad: .4cm,
     fill-align: true,
     prefix-transform: none,
@@ -64,6 +65,7 @@
     vspace: (none,),
     font: (auto,),
     fill: (align(right, repeat(gap: 6pt)[.]),),
+    gap: (auto,),
     fill-right-pad: .4cm,
     fill-align: true,
     prefix-transform: (lvl, prefix) => {
@@ -83,6 +85,7 @@
     vspace: (none,),
     font: (auto,),
     fill: (auto,),
+    gap: (auto,),
     fill-right-pad: none,
     fill-align: false,
     prefix-transform: none,
@@ -98,6 +101,7 @@
   vspace: presets.outrageous-toc.vspace,
   font: presets.outrageous-toc.font,
   fill: presets.outrageous-toc.fill,
+  gap: presets.outrageous-toc.gap,
   fill-right-pad: presets.outrageous-toc.fill-right-pad,
   fill-align: presets.outrageous-toc.fill-align,
   prefix-transform: presets.outrageous-toc.prefix-transform,
@@ -112,11 +116,15 @@
   let vspace = vspace.at(calc.min(vspace.len(), entry.level) - 1)
   let font = font.at(calc.min(font.len(), entry.level) - 1)
   let fill = fill.at(calc.min(fill.len(), entry.level) - 1)
+  let gap = gap.at(calc.min(gap.len(), entry.level) - 1)
+
+  if gap == auto { gap = .5em }
+  if gap == none { gap = 0pt }
 
   set text(font: font) if font not in (auto, none)
   set text(weight: font-weight) if font-weight not in (auto, none)
   set text(style: font-style) if font-style not in (auto, none)
-  if vspace != none { v(vspace, weak: true) }
+  set block(above: vspace) if vspace not in (auto, none)
 
   let prefix = if prefix-transform != none {
     let new-prefix = prefix-transform(entry.level, entry.prefix())
@@ -133,7 +141,7 @@
 
   context {
     // no gap when prefix is empty
-    let gap = if prefix == none or measure(prefix).width == 0pt { 0pt } else { .5em }
+    let gap = if prefix == none or measure(prefix).width == 0pt { 0pt } else { gap }
     let display(fill) = link(
       entry.element.location(),
       entry.indented(prefix, gap: gap, [#body #box(width: 1fr, fill) #sym.wj#page]),
